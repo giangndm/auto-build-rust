@@ -133,7 +133,9 @@ jobs:
         working-directory: ./target/${{ matrix.target }}/release
         run: |
           name="app1-${{ matrix.target }}.sha256sum"
-          if [[ "$RUNNER_OS" != "macOS" ]]; then
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            sha256sum "app1.exe" > "${name}"
+          else if [[ "$RUNNER_OS" != "macOS" ]]; then
             sha256sum "app1" > "${name}"
           else
             shasum -a 256 "app1" > "${name}"
@@ -145,7 +147,7 @@ jobs:
         working-directory: ./target/${{ matrix.target }}/release
         run: |
           name="app1-${{ matrix.target }}.tar.gz"
-          tar cvzf "${name}" "app1"
+          tar  "$RUNNER_OS" != "macOS" ? cvzf "${name}" "app1" : cvzf "${name}" "app1.exe"
           echo "::set-output name=name::${name}"
 
       - name: Upload release archive
