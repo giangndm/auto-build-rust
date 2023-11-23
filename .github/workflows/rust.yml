@@ -85,20 +85,6 @@ jobs:
           profile: minimal
           override: true
           target: ${{ matrix.target }}
-
-      - name: Install dev-tools
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y --no-install-recommends pkg-config musl-dev musl-tools
-
-      - name: Install deps (ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y --no-install-recommends libssl-dev libsoxr-dev libopus-dev
-
-      - name: Install deps (macos)
-        if: matrix.os == 'macos-latest'
-        run: |
-          brew update
-          brew install libsoxr
       - name: Test
         uses: actions-rs/cargo@v1
         with:
