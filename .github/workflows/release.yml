@@ -117,7 +117,7 @@ jobs:
             rust: stable
             target: aarch64-apple-darwin
             extension: ""
-            cross: false
+            cross: true
           # - build: windows gnu x64
           #   os: ubuntu-latest
           #   rust: stable
