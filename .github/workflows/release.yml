@@ -10,9 +10,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  ARTIFACT_DIR: release-builds
+
 jobs:
   build-release:
-    needs: create-release
     name: build-release
     runs-on: ${{ matrix.os }}
     env:
@@ -124,35 +126,26 @@ jobs:
           command: build
           args: --verbose --release --package app1 --target ${{ matrix.target }}
 
-      - name: Upload release archive windows
-        # if is x86_64-pc-windows-gnu or window-lastest
+      - name: Upload Artifact to Summary windows
         if: ${{ matrix.build == 'windows gnu x64' || matrix.build == 'windows msvc x64' }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}.exe
-          asset_name: app1-${{matrix.target}}.exe
-          asset_content_type: application/octet-stream
+          name: ${{ env.ARTIFACT_DIR }}
+          path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}.exe
 
-      - name: Upload release archive
-        # if is x86_64-pc-windows-gnu or window-lastest
-        if: ${{ matrix.build == 'windows gnu x64' || matrix.build == 'windows msvc x64' }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Artifact to Summary linux/macOS
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}
-          asset_name: app1-${{matrix.target}}
-          asset_content_type: application/octet-stream
+          name: ${{ env.ARTIFACT_DIR }}
+          path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}
 
   create-release:
+    needs: build-release
     runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_DIR }}
       - name: create_release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
@@ -160,4 +153,5 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: ${{ github.event_name == 'workflow_dispatch' && 'latest' || (github.ref == 'refs/heads/master' && 'latest') || github.ref }}
           title: Build ${{ github.event_name == 'workflow_dispatch' && 'development' || github.ref }}
+          files: *
           prerelease: true
