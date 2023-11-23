@@ -133,12 +133,14 @@ jobs:
         working-directory: ./target/${{ matrix.target }}/release
         run: |
           name="app1-${{ matrix.target }}.sha256sum"
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            sha256sum "app1.exe" > "${name}"
-          else if [[ "$RUNNER_OS" != "macOS" ]]; then
+          if [[ "$RUNNER_OS" != "macOS" ]]; then
             sha256sum "app1" > "${name}"
           else
-            shasum -a 256 "app1" > "${name}"
+            if [[ "$RUNNER_OS" == "Windows" ]]; then
+              sha256sum "app1.exe" > "${name}"
+            else
+              shasum -a 256 "app1" > "${name}"
+            fi
           fi
           echo "::set-output name=name::${name}"
 
