@@ -92,14 +92,6 @@ jobs:
             rust: stable
             target: x86_64-pc-windows-msvc
     steps:
-      - name: Set release tag
-        run: |
-          if [ "$GITHUB_EVENT_NAME" == 'workflow_dispatch' ]; then
-            echo "RELEASE_TAG=main" >> "$GITHUB_ENV"
-          else
-            echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}"  >> "$GITHUB_ENV"
-          fi
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
