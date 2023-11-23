@@ -134,15 +134,6 @@ jobs:
         run: |
           ls -la ./target/${{ matrix.target }}/release
 
-      - name: Create checksum windows
-        id: make-checksum
-        if: matrix.os == 'windows-latest'
-        working-directory: ./target/${{ matrix.target }}/release
-        run: |
-          name="app1-${{ matrix.target }}.sha256sum"
-          sha256sum "app1.exe" > "${name}"
-          echo "::set-output name=name::${name}"
-
       - name: Create checksum linux/macos
         id: make-checksum
         if: matrix.os != 'windows-latest'
@@ -151,21 +142,14 @@ jobs:
           name="app1-${{ matrix.target }}.sha256sum"
           if [[ "${{matrix.target}}" == "x86_64-pc-windows-gnu" ]]; then
             sha256sum "app1.exe" > "${name}"
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            sha256sum "app1.exe" > "${name}"
           elif [[ "$RUNNER_OS" != "macOS" ]]; then
             sha256sum "app1" > "${name}"
           else
             shasum -a 256 "app1" > "${name}"
           fi
-          echo "::set-output name=name::${name}"
-
-      - name: Tar release windows
-        id: make-artifact
-        if: matrix.os == 'windows-latest'
-        working-directory: ./target/${{ matrix.target }}/release
-        run: |
-          name="app1-${{ matrix.target }}.tar.gz"
-          tar cvzf "${name}" "app1.exe"
-          echo "::set-output name=name::${name}"    
+          echo "::set-output name=name::${name}"  
 
       - name: Tar release linux/macos
         id: make-artifact
@@ -174,6 +158,8 @@ jobs:
         run: |
           name="app1-${{ matrix.target }}.tar.gz"
           if [[ "${{matrix.target}}" == "x86_64-pc-windows-gnu" ]]; then
+            tar cvzf "${name}" "app1.exe"
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
             tar cvzf "${name}" "app1.exe"
           else
             tar cvzf "${name}" "app1"
