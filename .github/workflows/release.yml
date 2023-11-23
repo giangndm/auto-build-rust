@@ -147,7 +147,11 @@ jobs:
         working-directory: ./target/${{ matrix.target }}/release
         run: |
           name="app1-${{ matrix.target }}.tar.gz"
-          tar  "$RUNNER_OS" != "macOS" ? cvzf "${name}" "app1" : cvzf "${name}" "app1.exe"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            tar cvzf "${name}" "app1.exe"
+          else
+            tar cvzf "${name}" "app1"
+          fi
           echo "::set-output name=name::${name}"
 
       - name: Upload release archive
