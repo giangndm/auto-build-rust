@@ -5,10 +5,10 @@ pre-build = ["apt-get update && apt-get install --assume-yes libssl-dev libsoxr-
 pre-build = ["apt-get update && apt-get install --assume-yes libssl-dev libsoxr-dev libopus-dev libfdk-aac-dev"]
 
 [target.aarch64-unknown-linux-gnu]
-pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes libssl-dev:arm64 libsoxr-dev:arm64 libopus-dev:arm64 libfdk-aac-dev:arm64"]
+pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes libssl-dev:arm64 libsoxr-dev:arm64 libopus-dev:arm64"]
 
 [target.aarch64-unknown-linux-musl]
-pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes libssl-dev:arm64 libsoxr-dev:arm64 libopus-dev:arm64 libfdk-aac-dev:arm64"]
+pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes libssl-dev:arm64 libsoxr-dev:arm64 libopus-dev:arm64"]
 
 [target.x86_64-apple-darwin]
 pre-build = ["brew install openssl libsoxr opus fdk-aac"]
