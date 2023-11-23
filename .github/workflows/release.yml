@@ -1,0 +1,165 @@
+name: Release
+on:
+  push:
+    branches: [ master ]
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-release:
+    name: build-release
+    runs-on: ${{ matrix.os }}
+    env:
+      RUST_BACKTRACE: 1
+    strategy:
+      matrix:
+        build:
+          - linux gnu x64
+          - linux musl x64
+          - linux gnu aarch64
+          - linux musl aarch64
+          - linux gnueabihf arm
+          - linux gnueabihf armv7
+          - linux gnu mips
+          - linux gnuabi64 mips64
+          - linux gnuabi64 mips64el
+          - linux gnu mipsel
+          - macos x64
+          - macos aarch64
+        include:
+          - build: linux gnu x64
+            os: ubuntu-latest
+            rust: stable
+            target: x86_64-unknown-linux-gnu
+          - build: linux musl x64
+            os: ubuntu-latest
+            rust: stable
+            target: x86_64-unknown-linux-musl  
+          - build: linux gnu aarch64
+            os: ubuntu-latest
+            rust: stable
+            target: aarch64-unknown-linux-gnu
+          - build: linux gnueabihf arm
+            os: ubuntu-latest
+            rust: stable
+            target: arm-unknown-linux-gnueabihf
+          - build: linux gnueabihf armv7
+            os: ubuntu-latest
+            rust: stable
+            target: armv7-unknown-linux-gnueabihf
+          - build: linux gnu mips
+            os: ubuntu-latest
+            rust: 1.71.1
+            target: mips-unknown-linux-gnu
+          - build: linux gnuabi64 mips64
+            os: ubuntu-latest
+            rust: 1.71.1
+            target: mips64-unknown-linux-gnuabi64
+          - build: linux gnuabi64 mips64el
+            os: ubuntu-latest
+            rust: 1.71.1
+            target: mips64el-unknown-linux-gnuabi64
+          - build: linux gnu mipsel
+            os: ubuntu-latest
+            rust: 1.71.1
+            target: mipsel-unknown-linux-gnu
+          - build: linux musl aarch64
+            os: ubuntu-latest
+            rust: stable
+            target: aarch64-unknown-linux-musl  
+          - build: macos x64
+            os: macos-latest
+            rust: stable
+            target: x86_64-apple-darwin
+          - build: macos aarch64
+            os: macos-latest
+            rust: stable
+            target: aarch64-apple-darwin
+    steps:
+      - name: Set release tag
+        run: |
+          if [ "$GITHUB_EVENT_NAME" == 'workflow_dispatch' ]; then
+            echo "RELEASE_TAG=main" >> "$GITHUB_ENV"
+          else
+            echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}"  >> "$GITHUB_ENV"
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          profile: minimal
+          override: true
+          target: ${{ matrix.target }}
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --verbose --release --package app1 --target ${{ matrix.target }}
+
+      - name: Show files
+        run: |
+          ls -la ./target/${{ matrix.target }}/release
+
+      - name: Create checksum
+        id: make-checksum
+        working-directory: ./target/${{ matrix.target }}/release
+        run: |
+          name="app1-${{ matrix.target }}.sha256sum"
+          if [[ "$RUNNER_OS" != "macOS" ]]; then
+            sha256sum "app1" > "${name}"
+          else
+            shasum -a 256 "app1" > "${name}"
+          fi
+          echo "::set-output name=name::${name}"
+
+      - name: Tar release
+        id: make-artifact
+        working-directory: ./target/${{ matrix.target }}/release
+        run: |
+          name="app1-${{ matrix.target }}.tar.gz"
+          tar cvzf "${name}" "app1"
+          echo "::set-output name=name::${name}"
+
+      - name: Upload release archive
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }} 
+          asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}
+          asset_name: app1-${{matrix.target}}.tar.gz
+          asset_content_type: application/octet-stream
+
+      - name: Upload checksum
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }} 
+          asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-checksum.outputs.name }}
+          asset_name: app1-${{matrix.target}}.sha256sum
+          asset_content_type: text/plain
+
+  create-release:
+    needs: [build-release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: create_release 
+        id: create_release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ github.event_name == 'workflow_dispatch' && 'latest' || (github.ref == 'refs/heads/master' && 'latest') || github.ref }}
+          title: Build ${{ github.event_name == 'workflow_dispatch' && 'development' || github.ref }}
+          prerelease: true
