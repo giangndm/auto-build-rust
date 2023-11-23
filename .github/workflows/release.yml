@@ -129,6 +129,8 @@ jobs:
           args: --verbose --release --package app1 --target ${{ matrix.target }}
 
       - name: Show files
+        # Only run with ubuntu or macos
+        if: matrix.os != 'windows-latest'
         run: |
           ls -la ./target/${{ matrix.target }}/release
 
