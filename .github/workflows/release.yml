@@ -116,12 +116,10 @@ jobs:
 
       - name: Rename file Windows
         if: ${{ matrix.build == 'windows gnu x64' || matrix.build == 'windows msvc x64' }}
-        working-directory: ./target/${{ matrix.target }}/release
         run: mv ./target/${{ matrix.target }}/release/app1.exe app1-${{ matrix.target }}.exe
 
       - name: Rename file Linux/MacOS
         if: ${{ matrix.build != 'windows gnu x64' && matrix.build != 'windows msvc x64' }}
-        working-directory: ./target/${{ matrix.target }}/release
         run: mv ./target/${{ matrix.target }}/release/app1 app1-${{ matrix.target }}
 
       - name: Upload Artifact to Summary Windows
