@@ -35,8 +35,8 @@ jobs:
           # - linux gnuabi64 mips64
           # - linux gnuabi64 mips64el
           # - linux gnu mipsel
-          # - macos x64
-          # - macos aarch64
+          - macos x64
+          - macos aarch64
           # - windows gnu x64
           # - windows msvc x64
         include:
