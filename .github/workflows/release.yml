@@ -136,7 +136,7 @@ jobs:
         if: ${{ matrix.build != 'windows gnu x64' && matrix.build != 'windows msvc x64' }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.target }}${{ matrix.extension }}
+          name: ${{ matrix.target }}
           path: app1-${{ matrix.target }}${{ matrix.extension }}
 
       - name: Upload binaries to release
