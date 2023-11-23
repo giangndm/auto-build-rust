@@ -127,6 +127,12 @@ jobs:
           override: true
           target: ${{ matrix.target }}
 
+      - name: Install deps (macos)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew update
+          brew install openssl libsoxr opus fdk-aac
+
       - name: Build
         uses: actions-rs/cargo@v1
         with:
