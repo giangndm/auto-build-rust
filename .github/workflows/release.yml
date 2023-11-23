@@ -130,9 +130,8 @@ jobs:
         run: |
           ls -la ./target/${{ matrix.target }}/release
 
-      - name: Create checksum linux/macos
+      - name: Create checksum
         id: make-checksum
-        if: matrix.os != 'windows-latest'
         working-directory: ./target/${{ matrix.target }}/release
         run: |
           name="app1-${{ matrix.target }}.sha256sum"
@@ -147,9 +146,8 @@ jobs:
           fi
           echo "::set-output name=name::${name}"  
 
-      - name: Tar release linux/macos
+      - name: Tar release
         id: make-artifact
-        if: matrix.os != 'windows-latest'
         working-directory: ./target/${{ matrix.target }}/release
         run: |
           name="app1-${{ matrix.target }}.tar.gz"
