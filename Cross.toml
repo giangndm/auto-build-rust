@@ -9,3 +9,13 @@ pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install
 
 [target.aarch64-unknown-linux-musl]
 pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes libssl-dev:arm64 libsoxr-dev:arm64 libopus-dev:arm64"]
+
+[target.x86_64-apple-darwin]
+pre-build = ["brew install openssl libsoxr opus"]
+
+[target.aarch64-apple-darwin]
+pre-build = [
+    "brew install $(brew --cache --bottle-tag=arm64_monterey openssl)",
+    "brew install $(brew --cache --bottle-tag=arm64_monterey libsoxr)",
+    "brew install $(brew --cache --bottle-tag=arm64_monterey opus)"
+]

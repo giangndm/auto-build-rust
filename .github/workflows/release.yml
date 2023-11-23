@@ -95,16 +95,16 @@ jobs:
           #   rust: stable
           #   target: aarch64-unknown-linux-musl
           #   extension: ""
-          # - build: macos x64
-          #   os: macos-latest
-          #   rust: stable
-          #   target: x86_64-apple-darwin
-          #   extension: ""
-          # - build: macos aarch64
-          #   os: macos-latest
-          #   rust: stable
-          #   target: aarch64-apple-darwin
-          #   extension: ""
+          - build: macos x64
+            os: macos-latest
+            rust: stable
+            target: x86_64-apple-darwin
+            extension: ""
+          - build: macos aarch64
+            os: macos-latest
+            rust: stable
+            target: aarch64-apple-darwin
+            extension: ""
           # - build: windows gnu x64
           #   os: ubuntu-latest
           #   rust: stable
