@@ -131,7 +131,10 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           brew update
-          brew install openssl libsoxr opus fdk-aac
+          brew install openssl
+          brew install libsoxr
+          brew install opus
+          brew install fdk-aac
 
       - name: Build
         uses: actions-rs/cargo@v1
