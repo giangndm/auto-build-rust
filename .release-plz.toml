@@ -1,0 +1,9 @@
+[[package]]
+name = "app1"
+git_tag_enable = true
+publish = false
+
+[[package]]
+name = "lib1"
+git_tag_enable = true
+publish = false
