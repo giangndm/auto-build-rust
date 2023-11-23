@@ -124,61 +124,29 @@ jobs:
           command: build
           args: --verbose --release --package app1 --target ${{ matrix.target }}
 
-      - name: Show files
-        # Only run with ubuntu or macos
-        if: matrix.os != 'windows-latest'
-        run: |
-          ls -la ./target/${{ matrix.target }}/release
-
-      - name: Create checksum
-        id: make-checksum
-        working-directory: ./target/${{ matrix.target }}/release
-        run: |
-          name="app1-${{ matrix.target }}.sha256sum"
-          if [[ "${{matrix.target}}" == "x86_64-pc-windows-gnu" ]]; then
-            sha256sum "app1.exe" > "${name}"
-          elif [[ "$RUNNER_OS" == "Windows" ]]; then
-            sha256sum "app1.exe" > "${name}"
-          elif [[ "$RUNNER_OS" != "macOS" ]]; then
-            sha256sum "app1" > "${name}"
-          else
-            shasum -a 256 "app1" > "${name}"
-          fi
-          echo "::set-output name=name::${name}"  
-
-      - name: Tar release
-        id: make-artifact
-        working-directory: ./target/${{ matrix.target }}/release
-        run: |
-          name="app1-${{ matrix.target }}.tar.gz"
-          if [[ "${{matrix.target}}" == "x86_64-pc-windows-gnu" ]]; then
-            tar cvzf "${name}" "app1.exe"
-          elif [[ "$RUNNER_OS" == "Windows" ]]; then
-            tar cvzf "${name}" "app1.exe"
-          else
-            tar cvzf "${name}" "app1"
-          fi
-          echo "::set-output name=name::${name}"
+      - name: Upload release archive windows
+        # if is x86_64-pc-windows-gnu or window-lastest
+        if: ${{ matrix.build == 'windows gnu x64' || matrix.build == 'windows msvc x64' }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}.exe
+          asset_name: app1-${{matrix.target}}.exe
+          asset_content_type: application/octet-stream
 
       - name: Upload release archive
+        # if is x86_64-pc-windows-gnu or window-lastest
+        if: ${{ matrix.build == 'windows gnu x64' || matrix.build == 'windows msvc x64' }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}
-          asset_name: app1-${{matrix.target}}.tar.gz
+          asset_name: app1-${{matrix.target}}
           asset_content_type: application/octet-stream
-
-      - name: Upload checksum
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-checksum.outputs.name }}
-          asset_name: app1-${{matrix.target}}.sha256sum
-          asset_content_type: text/plain
 
   create-release:
     runs-on: ubuntu-latest
