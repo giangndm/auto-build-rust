@@ -6,6 +6,10 @@ pub fn mutiple(left: usize, right: usize) -> usize {
     left * right
 }
 
+pub fn minus(left: usize, right: usize) -> usize {
+    left - right
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
