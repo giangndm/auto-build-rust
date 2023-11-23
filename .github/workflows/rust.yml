@@ -26,6 +26,7 @@ jobs:
           - linux gnu mipsel
           - macos x64
           # - macos aarch64
+          - windows gnu x64
         include:
           - build: linux gnu x64
             os: ubuntu-latest
@@ -75,6 +76,10 @@ jobs:
           #   os: macos-latest
           #   rust: stable
           #   target: aarch64-apple-darwin
+          - build: windows gnu x64
+            os: windows-latest
+            rust: stable
+            target: x86_64-pc-windows-gnu
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -113,3 +118,29 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: lcov.info
           fail_ci_if_error: false
+  cargo-deny:
+    name: cargo-deny
+
+    # TODO: remove this matrix when https://github.com/EmbarkStudios/cargo-deny/issues/324 is resolved
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - aarch64-apple-ios
+          - aarch64-linux-android
+          - x86_64-apple-darwin
+          - x86_64-apple-ios
+          - x86_64-pc-windows-gnu
+          - x86_64-pc-windows-msvc
+          - x86_64-unknown-linux-gnu
+          - x86_64-unknown-redox
+          - mips64-unknown-linux-gnuabi64
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: EmbarkStudios/cargo-deny-action@v1
+      with:
+        command: check
+        log-level: error
+        arguments: --all-features --target ${{ matrix.platform }}

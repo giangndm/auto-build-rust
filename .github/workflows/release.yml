@@ -32,6 +32,7 @@ jobs:
           - linux gnu mipsel
           - macos x64
           - macos aarch64
+          - windows gnu x64
         include:
           - build: linux gnu x64
             os: ubuntu-latest
@@ -81,6 +82,10 @@ jobs:
             os: macos-latest
             rust: stable
             target: aarch64-apple-darwin
+          - build: windows gnu x64
+            os: windows-latest
+            rust: stable
+            target: x86_64-pc-windows-gnu
     steps:
       - name: Set release tag
         run: |
