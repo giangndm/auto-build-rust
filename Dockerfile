@@ -3,10 +3,10 @@ FROM ubuntu:22.04 as base
 COPY . /tmp
 WORKDIR /tmp
 
+RUN echo "${TARGETPLATFORM}"
+RUN ls -R /tmp/
 # move the binary to root based on platform
-RUN echo "${TARGETPLATFORM}" \
-    ls -R /tmp/ \
-    case "${TARGETPLATFORM}" in \
+RUN case "${TARGETPLATFORM}" in \
          "linux/amd64")  TARGET_APP=x86_64-unknown-linux-gnu/app1-x86_64-unknown-linux-gnu  ;; \
          "linux/arm64")  TARGET_APP=aarch64-unknown-linux-gnu/app1-aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
