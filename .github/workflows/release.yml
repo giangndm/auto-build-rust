@@ -114,18 +114,31 @@ jobs:
           command: build
           args: --verbose --release --package app1 --target ${{ matrix.target }}
 
-      - name: Upload Artifact to Summary windows
+      - name: Rename file Windows
+        if: ${{ matrix.build == 'windows gnu x64' || matrix.build == 'windows msvc x64' }}
+        id: make-checksum
+        working-directory: ./target/${{ matrix.target }}/release
+        run: mv ./target/${{ matrix.target }}/release/app1.exe app1-${{ matrix.target }}.exe
+
+      - name: Rename file Linux/MacOS
+        if: ${{ matrix.build != 'windows gnu x64' && matrix.build != 'windows msvc x64' }}
+        id: make-checksum
+        working-directory: ./target/${{ matrix.target }}/release
+        run: mv ./target/${{ matrix.target }}/release/app1 app1-${{ matrix.target }}
+
+      - name: Upload Artifact to Summary Windows
         if: ${{ matrix.build == 'windows gnu x64' || matrix.build == 'windows msvc x64' }}
         uses: actions/upload-artifact@v3
         with:
           name: app1-${{ matrix.target }}.exe
-          path: ./target/${{ matrix.target }}/release/app1.exe
+          path: app1-${{ matrix.target }}.exe
 
-      - name: Upload Artifact to Summary linux/macOS
+      - name: Upload Artifact to Summary Linux/MacOS
+        if: ${{ matrix.build != 'windows gnu x64' && matrix.build != 'windows msvc x64' }}
         uses: actions/upload-artifact@v3
         with:
           name: app1-${{ matrix.target }}
-          path: ./target/${{ matrix.target }}/release/app1
+          path: app1-${{ matrix.target }}
 
   create-release:
     needs: build-release
