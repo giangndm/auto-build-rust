@@ -134,12 +134,22 @@ jobs:
         run: |
           ls -la ./target/${{ matrix.target }}/release
 
-      - name: Create checksum
+      - name: Create checksum windows
         id: make-checksum
+        if: matrix.os == 'windows-latest'
         working-directory: ./target/${{ matrix.target }}/release
         run: |
           name="app1-${{ matrix.target }}.sha256sum"
-          if [[ "$RUNNER_OS" == "Windows" || "${{matrix.target}}" == "x86_64-pc-windows-gnu" ]]; then
+          sha256sum "app1.exe" > "${name}"
+          echo "::set-output name=name::${name}"
+
+      - name: Create checksum linux/macos
+        id: make-checksum
+        if: matrix.os != 'windows-latest'
+        working-directory: ./target/${{ matrix.target }}/release
+        run: |
+          name="app1-${{ matrix.target }}.sha256sum"
+          if [[ "${{matrix.target}}" == "x86_64-pc-windows-gnu" ]]; then
             sha256sum "app1.exe" > "${name}"
           elif [[ "$RUNNER_OS" != "macOS" ]]; then
             sha256sum "app1" > "${name}"
@@ -148,12 +158,22 @@ jobs:
           fi
           echo "::set-output name=name::${name}"
 
-      - name: Tar release
+      - name: Tar release windows
         id: make-artifact
+        if: matrix.os == 'windows-latest'
         working-directory: ./target/${{ matrix.target }}/release
         run: |
           name="app1-${{ matrix.target }}.tar.gz"
-          if [[ "$RUNNER_OS" == "Windows" || "${{matrix.target}}" == "x86_64-pc-windows-gnu" ]]; then
+          tar cvzf "${name}" "app1.exe"
+          echo "::set-output name=name::${name}"    
+
+      - name: Tar release linux/macos
+        id: make-artifact
+        if: matrix.os != 'windows-latest'
+        working-directory: ./target/${{ matrix.target }}/release
+        run: |
+          name="app1-${{ matrix.target }}.tar.gz"
+          if [[ "${{matrix.target}}" == "x86_64-pc-windows-gnu" ]]; then
             tar cvzf "${name}" "app1.exe"
           else
             tar cvzf "${name}" "app1"
@@ -187,18 +207,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ github.event_name == 'workflow_dispatch' && 'latest' || (github.ref == 'refs/heads/master' && 'latest') || github.ref }}-${{ matrix.target }}
           labels: ${{ steps.meta.outputs.labels }}    
 
   create-release:
