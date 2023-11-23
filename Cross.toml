@@ -5,4 +5,4 @@ pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install
 pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes libssl-dev:arm64 libopus-dev:arm64"]
 
 [target.x86_64-pc-windows-gnu]
-pre-build = ["apt-get update && apt-get install --assume-yes libssl-dev libopus-dev"]
+pre-build = ["apt-get update && apt-get install --assume-yes libssl-dev libopus-dev libfdk-aac-dev"]
