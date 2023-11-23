@@ -7,3 +7,7 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+str0m = "0.4.1"
+fdk-aac = "0.5.0"
+opus = "0.3.0"
+libsoxr = "0.2.9"
