@@ -4,7 +4,9 @@ COPY . /tmp
 WORKDIR /tmp
 
 # move the binary to root based on platform
-RUN case "${TARGETPLATFORM}" in \
+RUN echo "${TARGETPLATFORM}" \
+    ls -R /tmp/ \
+    case "${TARGETPLATFORM}" in \
          "linux/amd64")  TARGET_APP=x86_64-unknown-linux-gnu/app1-x86_64-unknown-linux-gnu  ;; \
          "linux/arm64")  TARGET_APP=aarch64-unknown-linux-gnu/app1-aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \

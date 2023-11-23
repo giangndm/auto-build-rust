@@ -126,14 +126,14 @@ jobs:
         if: ${{ matrix.build == 'windows gnu x64' || matrix.build == 'windows msvc x64' }}
         uses: actions/upload-artifact@v3
         with:
-          name: app1-${{ matrix.target }}.exe
+          name: ${{ matrix.target }}.exe
           path: app1-${{ matrix.target }}.exe
 
       - name: Upload Artifact to Summary Linux/MacOS
         if: ${{ matrix.build != 'windows gnu x64' && matrix.build != 'windows msvc x64' }}
         uses: actions/upload-artifact@v3
         with:
-          name: app1-${{ matrix.target }}
+          name: ${{ matrix.target }}
           path: app1-${{ matrix.target }}
 
   create-release:
