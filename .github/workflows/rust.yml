@@ -2,9 +2,9 @@ name: Rust
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 env:
   CARGO_TERM_COLOR: always
@@ -36,7 +36,7 @@ jobs:
           - build: linux musl x64
             os: ubuntu-latest
             rust: stable
-            target: x86_64-unknown-linux-musl  
+            target: x86_64-unknown-linux-musl
           - build: linux gnu aarch64
             os: ubuntu-latest
             rust: stable
@@ -68,7 +68,7 @@ jobs:
           - build: linux musl aarch64
             os: ubuntu-latest
             rust: stable
-            target: aarch64-unknown-linux-musl  
+            target: aarch64-unknown-linux-musl
           - build: macos x64
             os: macos-latest
             rust: stable
@@ -78,13 +78,13 @@ jobs:
           #   rust: stable
           #   target: aarch64-apple-darwin
           - build: windows gnu x64
-            os: windows-latest
+            os: ubuntu-latest
             rust: stable
             target: x86_64-pc-windows-gnu
-          - build: windows msvc x64
-            os: windows-latest
-            rust: stable
-            target: x86_64-pc-windows-msvc
+          # - build: windows msvc x64
+          #   os: ubuntu-latest
+          #   rust: stable
+          #   target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -132,7 +132,7 @@ jobs:
       matrix:
         platform:
           - x86_64-unknown-linux-gnu
-          - x86_64-unknown-linux-musl  
+          - x86_64-unknown-linux-musl
           - aarch64-unknown-linux-gnu
           - arm-unknown-linux-gnueabihf
           - armv7-unknown-linux-gnueabihf
@@ -140,17 +140,17 @@ jobs:
           - mips64-unknown-linux-gnuabi64
           - mips64el-unknown-linux-gnuabi64
           - mipsel-unknown-linux-gnu
-          - aarch64-unknown-linux-musl  
+          - aarch64-unknown-linux-musl
           - x86_64-apple-darwin
           - aarch64-apple-darwin
           - x86_64-pc-windows-gnu
-          - x86_64-pc-windows-msvc        
+          - x86_64-pc-windows-msvc
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: EmbarkStudios/cargo-deny-action@v1
-      with:
-        command: check
-        log-level: error
-        arguments: --all-features --target ${{ matrix.platform }}
+      - uses: actions/checkout@v3
+      - uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check
+          log-level: error
+          arguments: --all-features --target ${{ matrix.platform }}
