@@ -19,7 +19,7 @@ FROM ubuntu:22.04
 COPY --from=base /app1 /app1
 
 RUN apt-get update \
-    && apt-get install -y libssl-dev libsoxr-dev libopus-dev libfdk-aac-dev \
+    && apt-get install -y libssl-dev libopus-dev libfdk-aac-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["/app1"]
