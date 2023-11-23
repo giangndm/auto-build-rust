@@ -213,7 +213,7 @@ jobs:
           context: .
           push: true
           tags: ${{ github.event_name == 'workflow_dispatch' && 'latest' || (github.ref == 'refs/heads/master' && 'latest') || github.ref }}-${{ matrix.target }}
-          labels: ${{ steps.meta.outputs.labels }}    
+          labels: ${{ github.event_name == 'workflow_dispatch' && 'latest' || (github.ref == 'refs/heads/master' && 'latest') || github.ref }}
 
   create-release:
     runs-on: ubuntu-latest
