@@ -33,6 +33,7 @@ jobs:
           - macos x64
           - macos aarch64
           - windows gnu x64
+          - windows msvc x64
         include:
           - build: linux gnu x64
             os: ubuntu-latest
@@ -86,6 +87,10 @@ jobs:
             os: windows-latest
             rust: stable
             target: x86_64-pc-windows-gnu
+          - build: windows msvc x64
+            os: windows-latest
+            rust: stable
+            target: x86_64-pc-windows-msvc
     steps:
       - name: Set release tag
         run: |

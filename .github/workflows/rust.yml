@@ -27,6 +27,7 @@ jobs:
           - macos x64
           # - macos aarch64
           - windows gnu x64
+          # - windows msvc x64
         include:
           - build: linux gnu x64
             os: ubuntu-latest
@@ -80,6 +81,10 @@ jobs:
             os: windows-latest
             rust: stable
             target: x86_64-pc-windows-gnu
+          - build: windows msvc x64
+            os: windows-latest
+            rust: stable
+            target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -126,15 +131,20 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - aarch64-apple-ios
-          - aarch64-linux-android
-          - x86_64-apple-darwin
-          - x86_64-apple-ios
-          - x86_64-pc-windows-gnu
-          - x86_64-pc-windows-msvc
           - x86_64-unknown-linux-gnu
-          - x86_64-unknown-redox
+          - x86_64-unknown-linux-musl  
+          - aarch64-unknown-linux-gnu
+          - arm-unknown-linux-gnueabihf
+          - armv7-unknown-linux-gnueabihf
+          - mips-unknown-linux-gnu
           - mips64-unknown-linux-gnuabi64
+          - mips64el-unknown-linux-gnuabi64
+          - mipsel-unknown-linux-gnu
+          - aarch64-unknown-linux-musl  
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+          - x86_64-pc-windows-gnu
+          - x86_64-pc-windows-msvc        
 
     runs-on: ubuntu-latest
     steps:
