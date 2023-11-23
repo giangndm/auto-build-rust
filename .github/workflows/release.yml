@@ -39,58 +39,72 @@ jobs:
             os: ubuntu-latest
             rust: stable
             target: x86_64-unknown-linux-gnu
+            docker: true
           - build: linux musl x64
             os: ubuntu-latest
             rust: stable
             target: x86_64-unknown-linux-musl
+            docker: true
           - build: linux gnu aarch64
             os: ubuntu-latest
             rust: stable
             target: aarch64-unknown-linux-gnu
+            docker: true
           - build: linux gnueabihf arm
             os: ubuntu-latest
             rust: stable
             target: arm-unknown-linux-gnueabihf
+            docker: true
           - build: linux gnueabihf armv7
             os: ubuntu-latest
             rust: stable
             target: armv7-unknown-linux-gnueabihf
+            docker: true
           - build: linux gnu mips
             os: ubuntu-latest
             rust: 1.71.1
             target: mips-unknown-linux-gnu
+            docker: false
           - build: linux gnuabi64 mips64
             os: ubuntu-latest
             rust: 1.71.1
             target: mips64-unknown-linux-gnuabi64
+            docker: false
           - build: linux gnuabi64 mips64el
             os: ubuntu-latest
             rust: 1.71.1
             target: mips64el-unknown-linux-gnuabi64
+            docker: false
           - build: linux gnu mipsel
             os: ubuntu-latest
             rust: 1.71.1
             target: mipsel-unknown-linux-gnu
+            docker: false
           - build: linux musl aarch64
             os: ubuntu-latest
             rust: stable
             target: aarch64-unknown-linux-musl
+            docker: false
           - build: macos x64
             os: macos-latest
             rust: stable
             target: x86_64-apple-darwin
+            docker: false
           - build: macos aarch64
             os: macos-latest
             rust: stable
             target: aarch64-apple-darwin
+            docker: false
           - build: windows gnu x64
             os: ubuntu-latest
             rust: stable
             target: x86_64-pc-windows-gnu
+            docker: false
           - build: windows msvc x64
-            os: ubuntu-latest
+            os: windows-latest
             rust: stable
             target: x86_64-pc-windows-msvc
+            docker: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
