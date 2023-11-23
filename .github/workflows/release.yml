@@ -11,6 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  APP_NAME: app1
   ARTIFACT_DIR: release-builds
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -126,26 +127,26 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --verbose --release --package app1 --target ${{ matrix.target }}
+          args: --verbose --release --package ${{ env.APP_NAME }} --target ${{ matrix.target }}
 
       - name: Rename file
         if: ${{ matrix.build != 'windows gnu x64' && matrix.build != 'windows msvc x64' }}
-        run: mv ./target/${{ matrix.target }}/release/app1${{ matrix.extension }} app1-${{ matrix.target }}${{ matrix.extension }}
+        run: mv ./target/${{ matrix.target }}/release/${{ env.APP_NAME }}${{ matrix.extension }} ${{ env.APP_NAME }}-${{ matrix.target }}${{ matrix.extension }}
 
       - name: Upload Artifact to Summary
         if: ${{ matrix.build != 'windows gnu x64' && matrix.build != 'windows msvc x64' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.target }}
-          path: app1-${{ matrix.target }}${{ matrix.extension }}
+          path: ${{ env.APP_NAME }}-${{ matrix.target }}${{ matrix.extension }}
 
       - name: Upload binaries to release
         if: startsWith(github.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: app1-${{ matrix.target }}${{ matrix.extension }}
-          asset_name: app1-${{ matrix.target }}${{ matrix.extension }}
+          file: ${{ env.APP_NAME }}-${{ matrix.target }}${{ matrix.extension }}
+          asset_name: ${{ env.APP_NAME }}-${{ matrix.target }}${{ matrix.extension }}
           tag: ${{ github.ref }}
           overwrite: true
 
