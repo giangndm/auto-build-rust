@@ -154,5 +154,8 @@ jobs:
           automatic_release_tag: ${{ github.event_name == 'workflow_dispatch' && 'latest' || (github.ref == 'refs/heads/master' && 'latest') || github.ref }}
           title: Build ${{ github.event_name == 'workflow_dispatch' && 'development' || github.ref }}
           files: |
+            *.tar.gz
+            *.txt
+            *.exe
             *
           prerelease: true
