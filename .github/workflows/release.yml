@@ -12,6 +12,8 @@ concurrency:
 
 env:
   ARTIFACT_DIR: release-builds
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-release:
@@ -140,9 +142,7 @@ jobs:
           automatic_release_tag: ${{ github.event_name == 'workflow_dispatch' && 'latest' || (github.ref == 'refs/heads/master' && 'latest') || github.ref }}
           title: Build ${{ github.event_name == 'workflow_dispatch' && 'development' || github.ref }}
           files: |
-            *.txt
-            *.exe
-            *
+            */*
           prerelease: true
 
   deploy-docker:
