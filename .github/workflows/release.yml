@@ -40,7 +40,7 @@ jobs:
           # - linux gnu mipsel
           - macos x64
           - macos aarch64
-          # - windows gnu x64
+          - windows gnu x64
           # - windows msvc x64
         include:
           - build: linux gnu x64
@@ -121,12 +121,12 @@ jobs:
             target: aarch64-apple-darwin
             extension: ""
             cross: true
-          # - build: windows gnu x64
-          #   os: ubuntu-latest
-          #   rust: stable
-          #   target: x86_64-pc-windows-gnu
-          #   extension: ".exe"
-          #   cross: true
+          - build: windows gnu x64
+            os: ubuntu-latest
+            rust: stable
+            target: x86_64-pc-windows-gnu
+            extension: ".exe"
+            cross: true
           # - build: windows msvc x64
           #   os: windows-latest
           #   rust: stable
