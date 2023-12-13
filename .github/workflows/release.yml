@@ -29,9 +29,9 @@ jobs:
       matrix:
         build:
           - linux gnu x64
-          # - linux musl x64
+          - linux musl x64
           - linux gnu aarch64
-          # - linux musl aarch64
+          - linux musl aarch64
           # - linux gnueabihf arm
           # - linux gnueabihf armv7
           # - linux gnu mips
@@ -49,24 +49,24 @@ jobs:
             target: x86_64-unknown-linux-gnu
             extension: ""
             cross: false
-          # - build: linux musl x64
-          #   os: ubuntu-latest
-          #   rust: stable
-          #   target: x86_64-unknown-linux-musl
-          #   extension: ""
-          #   cross: false
+          - build: linux musl x64
+            os: ubuntu-latest
+            rust: stable
+            target: x86_64-unknown-linux-musl
+            extension: ""
+            cross: false
           - build: linux gnu aarch64
             os: ubuntu-latest
             rust: stable
             target: aarch64-unknown-linux-gnu
             extension: ""
             cross: true
-          # - build: linux musl aarch64
-          #   os: ubuntu-latest
-          #   rust: stable
-          #   target: aarch64-unknown-linux-musl
-          #   extension: ""
-          #   cross: true
+          - build: linux musl aarch64
+            os: ubuntu-latest
+            rust: stable
+            target: aarch64-unknown-linux-musl
+            extension: ""
+            cross: true
           # - build: linux gnueabihf arm
           #   os: ubuntu-latest
           #   rust: stable
