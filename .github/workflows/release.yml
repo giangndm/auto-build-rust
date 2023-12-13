@@ -15,6 +15,9 @@ env:
   ARTIFACT_DIR: release-builds
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  LIBOPUS_STATIC: true
+  LIBSOXR_STATIC: true
+  OPENSSL_STATIC: true
 
 jobs:
   build-release:
@@ -37,7 +40,7 @@ jobs:
           # - linux gnu mipsel
           - macos x64
           - macos aarch64
-          - windows gnu x64
+          # - windows gnu x64
           # - windows msvc x64
         include:
           - build: linux gnu x64
@@ -117,13 +120,13 @@ jobs:
             rust: stable
             target: aarch64-apple-darwin
             extension: ""
-            cross: false
-          - build: windows gnu x64
-            os: ubuntu-latest
-            rust: stable
-            target: x86_64-pc-windows-gnu
-            extension: ".exe"
             cross: true
+          # - build: windows gnu x64
+          #   os: ubuntu-latest
+          #   rust: stable
+          #   target: x86_64-pc-windows-gnu
+          #   extension: ".exe"
+          #   cross: true
           # - build: windows msvc x64
           #   os: windows-latest
           #   rust: stable
@@ -145,16 +148,6 @@ jobs:
       - name: Install dev-tools
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y --no-install-recommends pkg-config musl-dev musl-tools
-
-      - name: Install deps (ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y --no-install-recommends libssl-dev libopus-dev libfdk-aac-dev
-
-      - name: Install deps (macos)
-        if: matrix.os == 'macos-latest'
-        run: |
-          brew update
-          brew install openssl opus fdk-aac
 
       - name: Build
         uses: actions-rs/cargo@v1
