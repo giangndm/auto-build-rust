@@ -135,9 +135,9 @@ dependencies = [
 
 [[package]]
 name = "fdk-aac"
-version = "0.5.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3f3f988fa4114a728dbab7b64ef6d3adf5f4401f946c90dc17168f6e73b716c"
+checksum = "82783876563cce8326c5aad3b6e95b4be4abaa913e3343e8dc2239046fc2c649"
 dependencies = [
  "fdk-aac-sys",
 ]
@@ -219,6 +219,7 @@ name = "lib1"
 version = "0.1.0"
 dependencies = [
  "fdk-aac",
+ "libsoxr",
  "opus",
  "str0m",
 ]
@@ -228,6 +229,27 @@ name = "libc"
 version = "0.2.150"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "89d92a4743f9a61002fae18374ed11e7973f530cb3a3255fb354818118b2203c"
+
+[[package]]
+name = "libsoxr"
+version = "0.2.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a095d9d0be72aec1995f8b157c963ffea4efa6e9deba0bc9930288cd8cd60b15"
+dependencies = [
+ "bitflags",
+ "libc",
+ "libsoxr-sys",
+ "pkg-config",
+]
+
+[[package]]
+name = "libsoxr-sys"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7cffdc8b3b64759d2e95e3236fa6bf85fef226bf57023fa9273ec60edea8fbce"
+dependencies = [
+ "pkg-config",
+]
 
 [[package]]
 name = "log"
